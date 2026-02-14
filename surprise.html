@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pour toi 💜</title>
+  <style>
+    :root{
+      --bg:#07070b;
+      --lilac:#caa8ff;
+      --lilac2:#b78cff;
+      --paper:#f7f4ff;
+      --ink:#1b1033;
+      --accent:#ff4fa1;
+      --shadow: 0 30px 90px rgba(0,0,0,.55);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: radial-gradient(900px 500px at 50% 30%, rgba(202,168,255,.12), transparent 60%),
+                  radial-gradient(800px 500px at 20% 80%, rgba(255,79,161,.10), transparent 60%),
+                  var(--bg);
+      color:#fff;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      overflow:hidden;
+    }
+    .stars{
+      position:fixed; inset:0;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.55) 40%, transparent 41%),
+        radial-gradient(1px 1px at 30% 70%, rgba(255,255,255,.45) 40%, transparent 41%),
+        radial-gradient(1px 1px at 55% 35%, rgba(255,255,255,.35) 40%, transparent 41%),
+        radial-gradient(2px 2px at 75% 60%, rgba(255,255,255,.40) 40%, transparent 41%),
+        radial-gradient(1px 1px at 85% 25%, rgba(255,255,255,.30) 40%, transparent 41%);
+      opacity:.55;
+      pointer-events:none;
+      animation: twinkle 4s ease-in-out infinite alternate;
+    }
+    @keyframes twinkle{ from{opacity:.35} to{opacity:.75} }
+
+    .wrap{ position:relative; height:100%; display:grid; place-items:center; padding:24px; }
+    .stage{ width:min(720px, 94vw); text-align:center; position:relative; z-index:2; }
+
+    .hint{ margin:0 0 18px; opacity:.85; font-size:14px; letter-spacing:.2px; }
+    .hint b{ color: var(--lilac); }
+
+    .envelope{
+      width:min(340px, 82vw);
+      height:220px;
+      margin: 0 auto;
+      position:relative;
+      cursor:pointer;
+      filter: drop-shadow(0 25px 40px rgba(0,0,0,.55));
+      transition: transform .25s ease;
+    }
+    .envelope:hover{ transform: translateY(-3px) scale(1.01); }
+
+    .env-body{
+      position:absolute; inset:0;
+      background: linear-gradient(135deg, rgba(202,168,255,.95), rgba(183,140,255,.92));
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow);
+    }
+    .env-body:before{
+      content:"";
+      position:absolute; inset:0;
+      background: radial-gradient(600px 200px at 50% 0%, rgba(255,255,255,.22), transparent 60%);
+      opacity:.9;
+    }
+
+    .flap{
+      position:absolute; left:0; right:0; top:0;
+      height:55%;
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      transition: transform .65s cubic-bezier(.2,.9,.2,1);
+      z-index:3;
+    }
+    .flap:before{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(255,255,255,.20), rgba(0,0,0,0));
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      border-top-left-radius:18px;
+      border-top-right-radius:18px;
+    }
+
+    .front{ position:absolute; inset:0; z-index:2; }
+    .front:before{
+      content:""; position:absolute; inset:0;
+      background: rgba(255,255,255,.12);
+      clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
+      opacity:.35;
+    }
+    .front:after{
+      content:""; position:absolute; inset:0;
+      background: rgba(0,0,0,.10);
+      clip-path: polygon(0 0, 50% 65%, 100% 0, 100% 100%, 0 100%);
+      opacity:.22;
+    }
+
+    .seal{
+      position:absolute; left:50%; top:55%;
+      transform: translate(-50%,-50%);
+      width:62px; height:62px; border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), rgba(0,0,0,.05)),
+                  linear-gradient(135deg, #ff4fa1, #ff2f7f);
+      box-shadow: 0 16px 30px rgba(255,79,161,.25);
+      display:grid; place-items:center;
+      font-size:26px;
+      border:1px solid rgba(255,255,255,.18);
+      z-index:4;
+    }
+
+    .letter{
+      position:absolute;
+      left:50%;
+      bottom:18px;
+      transform: translateX(-50%) translateY(45px);
+      width: 86%;
+      background: linear-gradient(180deg, var(--paper), #efe9ff);
+      color: var(--ink);
+      border-radius: 16px;
+      padding: 18px 16px 16px;
+      box-shadow: 0 25px 60px rgba(0,0,0,.35);
+      border: 1px solid rgba(183,140,255,.35);
+      opacity:0;
+      z-index:1;
+      transition: transform .75s cubic-bezier(.2,.9,.2,1), opacity .55s ease;
+    }
+    .letter h2{ margin:0 0 10px; font-size: 20px; letter-spacing:.2px; }
+    .letter p{ margin:0 0 14px; font-size: 14.5px; line-height:1.35; opacity:.92; }
+
+    .btnRow{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top: 10px; }
+    button{
+      border:0; cursor:pointer; border-radius:999px;
+      padding: 12px 14px; font-weight: 800;
+      transition: transform .15s ease, filter .15s ease, opacity .15s ease;
+      user-select:none;
+    }
+    button:active{ transform: scale(.98); }
+
+    #yesBtn{
+      background: linear-gradient(135deg, #ff4fa1, #ff2f7f);
+      color:white;
+      box-shadow: 0 18px 40px rgba(255,79,161,.25);
+      min-width: 250px;
+      font-size: 14px;
+    }
+    #noBtn{
+      background: rgba(0,0,0,.78);
+      color:white;
+      border: 1px solid rgba(0,0,0,.20);
+      min-width: 120px;
+      font-size: 14px;
+      opacity:.9;
+    }
+
+    .open .flap{ transform: rotateX(165deg); }
+    .open .letter{ opacity:1; transform: translateX(-50%) translateY(-52px); }
+
+    .status{ margin-top:14px; font-size: 12.5px; opacity:.75; }
+    .status b{ color: var(--accent); }
+
+    .celebrate{
+      display:none;
+      margin-top:14px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(202,168,255,.22);
+      border-radius: 18px;
+      padding: 14px 14px 12px;
+      box-shadow: 0 25px 80px rgba(0,0,0,.35);
+      color:#fff;
+    }
+    .celebrate h3{ margin:0 0 6px; font-size:18px; }
+    .celebrate .note{ margin:0; font-size: 14px; line-height:1.35; opacity:.95; }
+    .celebrate .note b{ color: var(--lilac); }
+
+    .petal{
+      position:fixed;
+      top:-30px;
+      font-size: 18px;
+      pointer-events:none;
+      z-index:3;
+      opacity:.95;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.45));
+      animation: fall linear forwards;
+    }
+    @keyframes fall{
+      to{
+        transform: translate3d(var(--dx), 110vh, 0) rotate(var(--rot));
+        opacity: .98;
+      }
+    }
+
+    #fx{ position:fixed; inset:0; pointer-events:none; z-index:1; }
+
+    .music{
+      position:fixed;
+      left:18px; bottom:18px;
+      z-index:4;
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+      font-size:12.5px;
+      opacity:.9;
+    }
+    .music button{
+      padding:8px 10px;
+      font-size:12px;
+      min-width:auto;
+      background: rgba(202,168,255,.18);
+      border:1px solid rgba(202,168,255,.25);
+      color:#fff;
+      font-weight:800;
+    }
+    .music .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: rgba(255,79,161,.85);
+      box-shadow: 0 0 18px rgba(255,79,161,.65);
+      opacity:.7;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="fx"></canvas>
+  <div class="stars"></div>
+
+  <div class="wrap">
+    <div class="stage">
+      <p class="hint">Clique sur l’enveloppe <b>violette</b> 💜 (et… il n’y a qu’une seule bonne réponse 😇)</p>
+
+      <div class="envelope" id="envelope" aria-label="Ouvrir l'enveloppe">
+        <div class="env-body"></div>
+        <div class="flap"></div>
+        <div class="front"></div>
+        <div class="seal">✉️</div>
+
+        <div class="letter" id="letter">
+          <h2>Mon amour…</h2>
+          <p>Est-ce que tu veux être <b>mon Valentin</b> aujourd’hui ? 💘</p>
+
+          <div class="btnRow" id="btnRow">
+            <button id="yesBtn">Bien sûr que oui, ma princesse 👑</button>
+            <button id="noBtn">Non</button>
+          </div>
+
+          <div class="status" id="status">Petit rappel : il existe <b>une seule</b> bonne réponse 😉</div>
+
+          <div class="celebrate" id="celebrate">
+            <h3>Félicitations ! 🎉💖</h3>
+            <p class="note">
+              Rendez-vous quand j’arrive au <b>Luxembourg</b> ✨<br/>
+              Dress code : <b>ton sourire magnifique</b> 😘
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="status" style="margin-top:18px; opacity:.65;">
+        Astuce : la musique démarre quand tu interagis avec la page 🎵
+      </div>
+    </div>
+  </div>
+
+  <div class="music">
+    <span class="dot" id="musicDot"></span>
+    <span id="musicLabel">Musique : prête</span>
+    <button id="musicBtn" type="button">▶︎ Play</button>
+  </div>
+
+  <audio id="song" preload="auto" loop>
+    <source src="song.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const envelope = document.getElementById('envelope');
+    const status = document.getElementById('status');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const celebrate = document.getElementById('celebrate');
+
+    const song = document.getElementById('song');
+    const musicBtn = document.getElementById('musicBtn');
+    const musicLabel = document.getElementById('musicLabel');
+    const musicDot = document.getElementById('musicDot');
+
+    let opened = false;
+    let musicStarted = false;
+
+    function tryStartMusic(){
+      song.volume = 0.75;
+      song.play().then(() => {
+        musicStarted = true;
+        musicLabel.textContent = "Musique : en cours";
+        musicBtn.textContent = "⏸ Pause";
+        musicDot.style.opacity = "1";
+      }).catch(() => {});
+    }
+
+    musicBtn.addEventListener('click', () => {
+      if (song.paused) {
+        tryStartMusic();
+        song.play().catch(()=>{});
+        musicBtn.textContent = "⏸ Pause";
+        musicLabel.textContent = "Musique : en cours";
+        musicDot.style.opacity = "1";
+      } else {
+        song.pause();
+        musicBtn.textContent = "▶︎ Play";
+        musicLabel.textContent = "Musique : pause";
+        musicDot.style.opacity = ".6";
+      }
+    });
+
+    envelope.addEventListener('click', () => {
+      tryStartMusic();
+      opened = !opened;
+      envelope.classList.toggle('open', opened);
+    });
+
+    const noTexts = [
+      "Tu es sûr ?",
+      "Je suis sûre que tu t’es trompé et tu voulais cliquer sur OUI 😇",
+      "Ne m’énerve pas 😌",
+      "Tu as une dernière chance."
+    ];
+    let noIndex = 0;
+    let yesScale = 1;
+
+    function punishNoAttempt(){
+      if (noIndex < noTexts.length){
+        noBtn.textContent = noTexts[noIndex++];
+      } else {
+        noBtn.textContent = "…";
+        noBtn.disabled = true;
+        noBtn.style.cursor = "not-allowed";
+        noBtn.style.opacity = "0.25";
+      }
+
+      yesScale = Math.min(5.2, yesScale + 0.35);
+      yesBtn.style.transform = `scale(${yesScale})`;
+      yesBtn.style.filter = `brightness(${Math.min(1.18, 1 + (yesScale-1)*0.05)})`;
+
+      const noShrink = Math.max(0.80, 1 - (yesScale-1)*0.08);
+      noBtn.style.transform = `scale(${noShrink})`;
+      noBtn.style.opacity = `${Math.max(0.20, 0.90 - (yesScale-1)*0.14)}`;
+
+      status.innerHTML = `Petit rappel : il existe <b>une seule</b> bonne réponse 😉`;
+    }
+
+    noBtn.addEventListener('click', (e) => { e.preventDefault(); punishNoAttempt(); });
+    noBtn.addEventListener('mouseenter', punishNoAttempt);
+    noBtn.addEventListener('touchstart', punishNoAttempt, {passive:true});
+
+    function spawnPetals(durationMs=6500){
+      const endAt = Date.now() + durationMs;
+      const petalChars = ["🌹","💗","🌸","💜"];
+      function tick(){
+        if (Date.now() > endAt) return;
+        const el = document.createElement('div');
+        el.className = 'petal';
+        el.textContent = petalChars[Math.floor(Math.random()*petalChars.length)];
+        el.style.left = (Math.random()*100) + "vw";
+        el.style.setProperty('--dx', (Math.random()*60 - 30).toFixed(1) + "vw");
+        el.style.setProperty('--rot', (Math.random()*720 - 360).toFixed(0) + "deg");
+        el.style.animationDuration = (Math.random()*2.8 + 3.2).toFixed(2) + "s";
+        document.body.appendChild(el);
+        setTimeout(()=>el.remove(), 7000);
+        setTimeout(tick, 70);
+      }
+      tick();
+    }
+
+    const canvas = document.getElementById('fx');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    function resize(){
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function burst(x,y){
+      const count = 90;
+      for(let i=0;i<count;i++){
+        const a = Math.random()*Math.PI*2;
+        const s = Math.random()*5 + 2;
+        particles.push({ x, y, vx: Math.cos(a)*s, vy: Math.sin(a)*s, life: Math.random()*35 + 45, r: Math.random()*2 + 1 });
+      }
+    }
+
+    function animate(){
+      ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
+      ctx.globalCompositeOperation = 'lighter';
+      for(let i=particles.length-1;i>=0;i--){
+        const p = particles[i];
+        p.life -= 1;
+        p.vy += 0.06;
+        p.x += p.vx;
+        p.y += p.vy;
+        const alpha = Math.max(0, Math.min(1, p.life/80));
+        const hue = (i*7 + (Date.now()/25)) % 360;
+        ctx.fillStyle = `hsla(${hue}, 95%, 65%, ${alpha})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fill();
+        if (p.life <= 0) particles.splice(i,1);
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    function fireworksShow(){
+      for(let i=0;i<10;i++){
+        setTimeout(()=>{
+          burst(
+            Math.random()*window.innerWidth*0.8 + window.innerWidth*0.1,
+            Math.random()*window.innerHeight*0.35 + window.innerHeight*0.12
+          );
+        }, i*220);
+      }
+    }
+
+    yesBtn.addEventListener('click', () => {
+      tryStartMusic();
+      yesBtn.disabled = true;
+      noBtn.disabled = true;
+      noBtn.style.opacity = "0.25";
+      noBtn.style.cursor = "not-allowed";
+
+      celebrate.style.display = "block";
+      status.innerHTML = `Bonne réponse 😌 <b>Je savais que tu étais parfait.</b>`;
+      spawnPetals(6500);
+      fireworksShow();
+      setTimeout(fireworksShow, 1200);
+    });
+  </script>
+</body>
+</html>
